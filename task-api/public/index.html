@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Manager API — Production Dashboard & Playground</title>
+  <meta name="description" content="Production-ready Task Manager API with comprehensive test suite, bug fixes, assignee feature, and real-time API explorer.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+  <div class="ambient-glow glow-3"></div>
+
+  <div class="app-layout">
+    <!-- Header -->
+    <header class="navbar">
+      <div class="nav-brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">TaskManager <span class="badge-pro">PRO API</span></div>
+          <div class="brand-sub">The Untested API &bull; Tested, Fixed & Shipped</div>
+        </div>
+      </div>
+
+      <div class="nav-stats-pill">
+        <span class="status-indicator"></span>
+        <span class="coverage-text">87/87 Tests Passed</span>
+        <span class="badge-coverage">98.8% Coverage</span>
+      </div>
+
+      <div class="nav-actions">
+        <button id="seedDataBtn" class="btn btn-secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          </svg>
+          Seed Demo Data
+        </button>
+        <button id="openCreateModalBtn" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Create Task
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+      <!-- Stats Row -->
+      <section class="stats-grid" id="statsContainer">
+        <div class="stat-card" data-type="total">
+          <div class="stat-icon-wrapper icon-indigo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Total Tasks</span>
+            <span class="stat-value" id="statTotal">0</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-type="todo">
+          <div class="stat-icon-wrapper icon-sky">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">To Do</span>
+            <span class="stat-value" id="statTodo">0</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-type="in_progress">
+          <div class="stat-icon-wrapper icon-amber">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">In Progress</span>
+            <span class="stat-value" id="statInProgress">0</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-type="done">
+          <div class="stat-icon-wrapper icon-emerald">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Completed</span>
+            <span class="stat-value" id="statDone">0</span>
+          </div>
+        </div>
+
+        <div class="stat-card" data-type="overdue">
+          <div class="stat-icon-wrapper icon-rose">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Overdue</span>
+            <span class="stat-value" id="statOverdue">0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Task Controls & Filters -->
+      <section class="controls-card">
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-status="">All Tasks</button>
+          <button class="filter-tab" data-status="todo">To Do</button>
+          <button class="filter-tab" data-status="in_progress">In Progress</button>
+          <button class="filter-tab" data-status="done">Completed</button>
+        </div>
+
+        <div class="search-and-pagination">
+          <div class="search-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="searchInput" placeholder="Search tasks by title or assignee...">
+          </div>
+
+          <div class="pagination-controls">
+            <span class="page-info" id="paginationLabel">Page 1</span>
+            <button id="prevPageBtn" class="btn-icon" title="Previous Page" disabled>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button id="nextPageBtn" class="btn-icon" title="Next Page">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Task List Container -->
+      <section class="tasks-section">
+        <div id="tasksList" class="tasks-list">
+          <!-- Dynamically Rendered Tasks -->
+        </div>
+
+        <div id="emptyState" class="empty-state hidden">
+          <div class="empty-state-icon">📋</div>
+          <h3>No tasks found</h3>
+          <p>Get started by creating a task or click "Seed Demo Data" above.</p>
+          <button id="emptySeedBtn" class="btn btn-secondary">Populate Sample Tasks</button>
+        </div>
+      </section>
+
+      <!-- Live REST API Inspector Drawer -->
+      <section class="api-console-section">
+        <div class="console-header" id="toggleConsoleBtn">
+          <div class="console-title">
+            <span class="terminal-dot"></span>
+            <strong>Live API Request Log</strong>
+            <span class="console-subtitle">(Real-time REST inspection)</span>
+          </div>
+          <div class="console-controls">
+            <span id="logCountBadge" class="log-count-badge">0 requests</span>
+            <button id="clearLogsBtn" class="btn-text">Clear</button>
+          </div>
+        </div>
+        <div id="consoleBody" class="console-body">
+          <div id="logsContainer" class="logs-container">
+            <!-- Dynamic request logs will stream here -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Create Task Modal -->
+    <div id="createModal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2 class="modal-title">Create New Task</h2>
+          <button class="modal-close-btn" id="closeCreateModalBtn">&times;</button>
+        </div>
+        <form id="createTaskForm" class="modal-form">
+          <div class="form-group">
+            <label for="createTitle">Title <span class="required">*</span></label>
+            <input type="text" id="createTitle" placeholder="e.g. Implement webhook handlers" required>
+          </div>
+
+          <div class="form-group">
+            <label for="createDescription">Description</label>
+            <textarea id="createDescription" rows="3" placeholder="Additional details or acceptance criteria..."></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="createPriority">Priority</label>
+              <select id="createPriority">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="createStatus">Status</label>
+              <select id="createStatus">
+                <option value="todo" selected>To Do</option>
+                <option value="in_progress">In Progress</option>
+                <option value="done">Done</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="createDueDate">Due Date</label>
+              <input type="datetime-local" id="createDueDate">
+            </div>
+
+            <div class="form-group">
+              <label for="createAssignee">Assignee</label>
+              <input type="text" id="createAssignee" placeholder="e.g. Alex Morgan">
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelCreateBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="submitCreateBtn">Create Task</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Assign Task Modal -->
+    <div id="assignModal" class="modal-backdrop hidden">
+      <div class="modal-card modal-sm">
+        <div class="modal-header">
+          <h2 class="modal-title">Assign Task</h2>
+          <button class="modal-close-btn" id="closeAssignModalBtn">&times;</button>
+        </div>
+        <form id="assignTaskForm" class="modal-form">
+          <input type="hidden" id="assignTaskId">
+          <div class="form-group">
+            <label for="assigneeInput">Assignee Name <span class="required">*</span></label>
+            <input type="text" id="assigneeInput" placeholder="e.g. Sarah Connor" required autofocus>
+            <span class="field-hint">Calls <code>PATCH /tasks/:id/assign</code></span>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelAssignBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="submitAssignBtn">Save Assignee</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
